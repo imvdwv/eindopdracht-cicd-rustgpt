@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: ghcr.io/imvdwv/eindopdracht-cicd-rustgpt
+        image: ghcr.io/imvdwv/eindopdracht-cicd-rustgpt@sha256:2b7e5a77b8673a1261f3e74472d090b25cdba3f92bab6fe16c1c66498f670d8b
         ports:
         - containerPort: 3000
       imagePullSecrets:
