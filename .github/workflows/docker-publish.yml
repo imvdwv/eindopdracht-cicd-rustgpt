@@ -55,7 +55,7 @@ jobs:
       - name: Install kubectl
         uses: azure/setup-kubectl@v1
         with:
-          version: 'v22.9.0'
+          version: 'v1.22.0'
 
       - name: Set KUBECONFIG
         run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
