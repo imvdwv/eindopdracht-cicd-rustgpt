@@ -59,13 +59,15 @@ jobs:
         run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@v2
-        with:
-          version: 'v1.22.0'
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
 
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f rustgpt-deployment.yml
+
 
 
 
