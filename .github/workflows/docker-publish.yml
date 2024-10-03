@@ -52,18 +52,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          version: 'v1.22.0'
+      - name: Create .kube directory
+        run: mkdir -p $HOME/.kube
 
       - name: Set KUBECONFIG
         run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v2
+        with:
+          version: 'v1.22.0'
+
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f rustgpt-deployment.yml
-
 
 
 
