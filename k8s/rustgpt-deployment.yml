@@ -14,9 +14,10 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:latest
+        image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:${{ steps.meta.outputs.tags }}  # Gebruik de unieke tag
         ports:
         - containerPort: 3000
+        imagePullPolicy: Always  # Zorgt ervoor dat Kubernetes altijd de nieuwste image pulled
       imagePullSecrets:
       - name: rustgpt-registry-secret
 ---

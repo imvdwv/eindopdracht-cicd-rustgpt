@@ -40,6 +40,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha  # Genereert een unieke tag gebaseerd op de commit hash
 
       - name: Build and push Docker image
         id: build-and-push
@@ -67,6 +69,7 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/rustgpt-deployment.yml
+
 
 
 
