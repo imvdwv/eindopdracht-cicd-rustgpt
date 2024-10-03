@@ -66,10 +66,12 @@ jobs:
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
 
-      # Update de Kubernetes deployment YAML met de juiste image tag
       - name: Update Kubernetes deployment with new image
         run: |
-          sed -i "s|registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:.*|registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:${{ steps.meta.outputs.tags }}|g" k8s/rustgpt-deployment.yml
+          sed -i "s|registry.digitalocean.com/rustgpt-container-registry/.*|registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:${{ steps.meta.outputs.tags }}|g" k8s/rustgpt-deployment.yml
+
+      - name: Check updated deployment YAML
+        run: cat k8s/rustgpt-deployment.yml  # Voeg deze stap toe om te zien of de tag correct is vervangen
 
       - name: Deploy to Kubernetes
         run: |
