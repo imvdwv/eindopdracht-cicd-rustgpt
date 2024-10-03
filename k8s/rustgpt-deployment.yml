@@ -19,7 +19,7 @@ spec:
         - containerPort: 3000
         imagePullPolicy: Always  # Zorgt ervoor dat Kubernetes altijd de nieuwste image pulled
       imagePullSecrets:
-      - name: rustgpt-registry-secret
+      - name: rustgpt-registry-secret  # Verwijst naar de secret die je hebt aangemaakt
 ---
 apiVersion: v1
 kind: Service
@@ -33,40 +33,3 @@ spec:
       port: 80
       targetPort: 3000
   type: LoadBalancer
-
-
-
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: rustgpt-deployment
-# spec:
-#   replicas: 2
-#   selector:
-#     matchLabels:
-#       app: rustgpt
-#   template:
-#     metadata:
-#       labels:
-#         app: rustgpt
-#     spec:
-#       containers:
-#       - name: rustgpt-container
-#         image: ghcr.io/imvdwv/eindopdracht-cicd-rustgpt@sha256:2b7e5a77b8673a1261f3e74472d090b25cdba3f92bab6fe16c1c66498f670d8b
-#         ports:
-#         - containerPort: 3000
-#       imagePullSecrets:
-#       - name: ghcr-secret
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: rustgpt-service
-# spec:
-#   selector:
-#     app: rustgpt
-#   ports:
-#     - protocol: TCP
-#       port: 80
-#       targetPort: 3000
-#   type: LoadBalancer
