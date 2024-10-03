@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:${{ steps.meta.outputs.tags }}  # Wordt vervangen door sed in de pipeline
+        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:{{ steps.meta.outputs.tags }}  # Alleen de tag
         ports:
         - containerPort: 3000
-        imagePullPolicy: Always  # Zorgt ervoor dat Kubernetes altijd de nieuwste image pulled
+        imagePullPolicy: Always
       imagePullSecrets:
-      - name: rustgpt-registry-secret  # Zorgt ervoor dat de Kubernetes pods de juiste secret gebruiken
+      - name: rustgpt-registry-secret
 ---
 apiVersion: v1
 kind: Service

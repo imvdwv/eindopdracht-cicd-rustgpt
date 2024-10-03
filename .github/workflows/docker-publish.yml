@@ -68,10 +68,10 @@ jobs:
 
       - name: Update Kubernetes deployment with new image
         run: |
-          sed -i "s|registry.digitalocean.com/rustgpt-container-registry/.*|registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:${{ steps.meta.outputs.tags }}|g" k8s/rustgpt-deployment.yml
+          sed -i "s|image: .*|image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:${{ steps.meta.outputs.tags }}|g" k8s/rustgpt-deployment.yml
 
       - name: Check updated deployment YAML
-        run: cat k8s/rustgpt-deployment.yml  # Voeg deze stap toe om te zien of de tag correct is vervangen
+        run: cat k8s/rustgpt-deployment.yml  # Debugging stap om de image te controleren
 
       - name: Deploy to Kubernetes
         run: |
