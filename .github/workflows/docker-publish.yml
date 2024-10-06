@@ -49,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true  # Zorg ervoor dat de images worden gepusht
+          push: true  
           tags: |
             ${{ steps.meta.outputs.tags }}  # Gebruik de gegenereerde tag voor de image
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest  # Push ook de 'latest' tag
