@@ -41,18 +41,16 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=sha  # Genereert een unieke tag gebaseerd op de commit hash
-            latest    # Voegt ook de 'latest' tag toe
+            ${{ steps.meta.outputs.tags }}  # De gegenereerde tag op basis van commit hash
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest  # De 'latest' tag
 
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ steps.meta.outputs.tags }}  # Unieke tag op basis van de commit hash
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}  
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
