@@ -51,8 +51,8 @@ jobs:
           context: .
           push: true  
           tags: |
-            ${{ steps.meta.outputs.tags }}  # Push unieke tag gebaseerd op de commit hash
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest  # Push de 'latest' tag
+            ${{ steps.meta.outputs.tags }}  # Unieke tag gebaseerd op de commit hash
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest  # De 'latest' tag
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
