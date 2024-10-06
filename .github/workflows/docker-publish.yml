@@ -51,7 +51,7 @@ jobs:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ${{ steps.meta.outputs.tags }}  # Push alle gegenereerde tags (inclusief latest)
+            ${{ steps.meta.outputs.tags }}  # Gebruik de gegenereerde tags
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
