@@ -41,8 +41,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=sha  # Genereert een unieke tag gebaseerd op de commit hash
-            latest    # Voegt ook de 'latest' tag toe
+            ${{ steps.meta.outputs.tags }}  # De gegenereerde tag op basis van commit hash
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest  # De 'latest' tag
 
       - name: Build and push Docker image
         id: build-and-push
@@ -50,9 +50,7 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ${{ steps.meta.outputs.tags }}  # Gebruik de gegenereerde tags
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ steps.meta.outputs.tags }}  
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -74,7 +72,7 @@ jobs:
           sed -i "s|image: .*|image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:latest|g" k8s/rustgpt-deployment.yml
 
       - name: Check updated deployment YAML
-        run: cat k8s/rustgpt-deployment.yml  # Debugging stap om de image te controleren
+        run: cat k8s/rustgpt-deployment.yml  
 
       - name: Deploy to Kubernetes
         run: |
