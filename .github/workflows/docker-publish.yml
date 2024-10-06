@@ -74,7 +74,7 @@ jobs:
           sed -i "s|image: .*|image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:latest|g" k8s/rustgpt-deployment.yml
 
       - name: Check updated deployment YAML
-        run: cat k8s/rustgpt-deployment.yml  # Debugging stap om de image te controleren
+        run: cat k8s/rustgpt-deployment.yml  
 
       - name: Deploy to Kubernetes
         run: |
