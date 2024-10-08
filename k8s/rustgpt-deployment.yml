@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: rustgpt-deployment
 spec:
-  replicas: 2
+  replicas: 3  
   selector:
     matchLabels:
       app: rustgpt
@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: latest 
+        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:latest  
         ports:
-        - containerPort: 3000
+        - containerPort: 3000  
         imagePullPolicy: Always  
       imagePullSecrets:
-      - name: rustgpt-registry-secret
+      - name: rustgpt-registry-secret 
 ---
 apiVersion: v1
 kind: Service
@@ -30,6 +30,6 @@ spec:
     app: rustgpt
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 3000
-  type: LoadBalancer
+    port: 80  
+    targetPort: 3000  
+  type: LoadBalancer  
