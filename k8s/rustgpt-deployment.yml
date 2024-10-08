@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:latest  # Gebruik de 'latest' tag
+        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:latest  
         ports:
         - containerPort: 3000
-        imagePullPolicy: Always  # Forceert Kubernetes om altijd de nieuwste image te pullen
+        imagePullPolicy: Always  
       imagePullSecrets:
-      - name: rustgpt-registry-secret  # Zorgt ervoor dat Kubernetes de juiste credentials gebruikt om de image te pullen
+      - name: rustgpt-registry-secret  
 ---
 apiVersion: v1
 kind: Service

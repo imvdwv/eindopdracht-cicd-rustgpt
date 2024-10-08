@@ -13,7 +13,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: #6366f1; /* Tailwind indigo-500 color */
+    background-color: #900C3F; /* Tailwind indigo-500 color */
     border-radius: 0.25rem; /* Optional: Rounded corners */
     border: 3px solid transparent; /* Optional: Invisible border */
   }
