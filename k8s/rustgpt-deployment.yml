@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: sha-${{ github.sha }}:latest  
+        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:latest  
         ports:
         - containerPort: 3000
         imagePullPolicy: Always  

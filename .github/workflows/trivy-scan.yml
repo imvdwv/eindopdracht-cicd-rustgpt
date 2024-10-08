@@ -2,30 +2,26 @@ name: Scan Docker Image
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
 
 jobs:
   trivy-scan:
-    runs-on: ubuntu-latest
+    name: Scan for Vulnerabilities
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: actions/checkout@v4
 
       - name: Build Docker image
         run: |
-          docker build -t registry.digitalocean.com/rustgpt-container-registry/eindopdracht-cicd-rustgpt:latest .  
+          docker build -t registry.digitalocean.com/rustgpt-container-registry/eindopdracht-cicd-rustgpt:latest . 
 
-      - name: Run Trivy scan
-        uses: aquasecurity/trivy-action@v0.24.0
+      - name: Run Trivy vulnerability scanner in fs mode
+        uses: aquasecurity/trivy-action@0.20.0
         with:
-          image: registry.digitalocean.com/rustgpt-container-registry/eindopdracht-cicd-rustgpt:latest  
-          format: 'json'  
-          severity: 'HIGH,CRITICAL'  
-          ignore-unfixed: true
-          output: trivy-results.json  
+          scan-type: 'fs' 
+          scan-ref: '.'  
+          trivy-config: trivy-scan.yaml 
