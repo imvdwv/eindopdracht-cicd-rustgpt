@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:latest  
+        image: latest 
         ports:
         - containerPort: 3000
         imagePullPolicy: Always  
