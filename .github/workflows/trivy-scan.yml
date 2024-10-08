@@ -1,0 +1,31 @@
+name: Scan Docker Image
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  trivy-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        run: |
+          docker build -t registry.digitalocean.com/rustgpt-container-registry/eindopdracht-cicd-rustgpt:latest .  
+
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@v0.3.0
+        with:
+          image: registry.digitalocean.com/rustgpt-container-registry/eindopdracht-cicd-rustgpt:latest  
+          format: 'json'  
+          severity: 'HIGH,CRITICAL'  
+          ignore-unfixed: true
+          output: trivy-results.json  
