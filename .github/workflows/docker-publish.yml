@@ -1,14 +1,13 @@
 name: Build, Publish and Deploy Docker Image
 
 on:
+  schedule:
+    - cron: '43 21 * * *'
   push:
-    branches:
-      - main
-    tags:
-      - 'v*.*.*'
+    branches: [ "main" ]
+    tags: [ 'v*.*.*' ]
   pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 env:
   REGISTRY: registry.digitalocean.com
@@ -42,8 +41,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            sha-${{ github.sha }}
-            latest
+            sha-${{ github.sha }}  
+            latest  
 
       - name: Build and push Docker image
         id: build-and-push
@@ -70,12 +69,13 @@ jobs:
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
 
-      - name: Verify Kubernetes connection
-        run: kubectl get nodes --namespace default
-
       - name: Update Kubernetes deployment with new image
         run: |
-          kubectl set image deployment/rustgpt-deployment rustgpt-container=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --namespace default
+          sed -i "s|image: .*|image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:latest|g" k8s/rustgpt-deployment.yml
 
       - name: Check updated deployment YAML
         run: cat k8s/rustgpt-deployment.yml
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/rustgpt-deployment.yml
