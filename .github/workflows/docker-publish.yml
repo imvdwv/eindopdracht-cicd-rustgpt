@@ -58,6 +58,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Create .kube directory
+        run: mkdir -p $HOME/.kube
+
       - name: Set KUBECONFIG
         run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
