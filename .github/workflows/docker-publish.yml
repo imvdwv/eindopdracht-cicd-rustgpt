@@ -1,13 +1,14 @@
 name: Build, Publish and Deploy Docker Image
 
 on:
-  schedule:
-    - cron: '43 21 * * *'
   push:
-    branches: [ "main" ]
-    tags: [ 'v*.*.*' ]
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 env:
   REGISTRY: registry.digitalocean.com
@@ -41,41 +42,22 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            sha-${{ github.sha }} 
-            latest 
+            sha-${{ github.sha }}
+            latest
 
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true  
+          push: true
           tags: |
-            ${{ steps.meta.outputs.tags }}  
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest  
+            ${{ steps.meta.outputs.tags }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Create .kube directory
-        run: mkdir -p $HOME/.kube
-
-      - name: Set KUBECONFIG
-        run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
-          chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
-
-      - name: Update Kubernetes deployment with new image
-        run: |
-          sed -i "s|image: .*|image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:latest|g" k8s/rustgpt-deployment.yml
-
-      - name: Check updated deployment YAML
-        run: cat k8s/rustgpt-deployment.yml
-
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/rustgpt-deployment.yml
+          kubectl set image deployment/rustgpt-deployment rustgpt-container=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --namespace default

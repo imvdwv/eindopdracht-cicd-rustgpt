@@ -19,13 +19,13 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t rustgpt .
+          docker build -t registry.digitalocean.com/rustgpt-container-registry/eindopdracht-cicd-rustgpt:latest .  
 
       - name: Run Trivy scan
-        uses: aquasecurity/trivy-action@v0.25.0
+        uses: aquasecurity/trivy-action@v0.24.0
         with:
-          image: rustgpt
-          format: 'table'
-          severity: 'HIGH,CRITICAL'
+          image: registry.digitalocean.com/rustgpt-container-registry/eindopdracht-cicd-rustgpt:latest  
+          format: 'json'  
+          severity: 'HIGH,CRITICAL'  
           ignore-unfixed: true
-          output: trivy-results.json
+          output: trivy-results.json  

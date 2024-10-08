@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rustgpt-deployment
+  namespace: default
 spec:
   replicas: 2
   selector:
@@ -14,17 +15,18 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:latest  
+        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:latest
         ports:
         - containerPort: 3000
         imagePullPolicy: Always  
       imagePullSecrets:
-      - name: rustgpt-registry-secret  
+      - name: rustgpt-registry-secret
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: rustgpt-service
+  namespace: default
 spec:
   selector:
     app: rustgpt
