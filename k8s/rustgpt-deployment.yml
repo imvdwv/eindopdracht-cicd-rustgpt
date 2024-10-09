@@ -3,7 +3,12 @@ kind: Deployment
 metadata:
   name: rustgpt-deployment
 spec:
-  replicas: 3  
+  replicas: 3 
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1 
+      maxSurge: 1 
   selector:
     matchLabels:
       app: rustgpt
@@ -14,9 +19,9 @@ spec:
     spec:
       containers:
       - name: rustgpt-container
-        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:latest  
+        image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:sha-${{ github.sha }} 
         ports:
-        - containerPort: 3000  
+        - containerPort: 3000
         imagePullPolicy: Always  
       imagePullSecrets:
       - name: rustgpt-registry-secret 
@@ -30,6 +35,6 @@ spec:
     app: rustgpt
   ports:
   - protocol: TCP
-    port: 80  
-    targetPort: 3000  
-  type: LoadBalancer  
+    port: 80
+    targetPort: 3000 
+  type: LoadBalancer 
