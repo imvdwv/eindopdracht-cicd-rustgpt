@@ -13,7 +13,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: #00ff00; /* Tailwind indigo-500 color */
+    background-color: #6366f1; /* Tailwind indigo-500 color */
     border-radius: 0.25rem; /* Optional: Rounded corners */
     border: 3px solid transparent; /* Optional: Invisible border */
   }
@@ -21,6 +21,6 @@
   /* Style for Firefox */
   * {
     scrollbar-width: thin; /* Thinner scrollbar */
-    scrollbar-color: #ec7c26 transparent; /* Tailwind indigo-500 color and transparent track */
+    scrollbar-color: #6366f1 transparent; /* Tailwind indigo-500 color and transparent track */
   }
 }
