@@ -1,31 +1,42 @@
 name: Build, Publish and Deploy Docker Image
 
 on:
+  # Deze actie wordt uitgevoerd wanneer er een push plaatsvindt naar de 'main' branch
+  # of wanneer er een tag wordt aangemaakt die voldoet aan het patroon 'v*.*.*' (voor versiebeheer).
   push:
     branches: [ "main" ]
     tags: [ 'v*.*.*' ]
+  
+  # Deze actie wordt ook uitgevoerd bij een pull request naar de 'main' branch.
   pull_request:
     branches: [ "main" ]
 
+# Omgevingsvariabelen voor het gebruik van het DigitalOcean container registry en de image naam.
 env:
   REGISTRY: registry.digitalocean.com
   IMAGE_NAME: rustgpt-container-registry/${{ github.repository }}
 
 jobs:
   build:
+    # Specificeert dat de actie wordt uitgevoerd op de nieuwste Ubuntu-versie.
     runs-on: ubuntu-latest
+    
+    # Bepaalt welke permissies de job nodig heeft, zoals toegang tot inhoud, packages en id-token.
     permissions:
       contents: read
       packages: write
       id-token: write
 
     steps:
+      # Stap 1: Haalt de repository op om er verder mee te werken.
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Stap 2: Zet Docker Buildx op om gebruik te maken van geavanceerde build-functionaliteiten zoals multi-platform builds.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Stap 3: Logt in bij het DigitalOcean container registry met behulp van de opgeslagen geheimen (credentials).
       - name: Log into registry
         uses: docker/login-action@v3
         with:
@@ -33,35 +44,48 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # Stap 4: Bouwt en push de Docker-image naar het container registry. Hierbij wordt de commit hash als tag gebruikt voor versiebeheer van de image.
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
+          # Context is de huidige directory
           context: .
-          push: true  
+          # Image wordt na het bouwen automatisch gepusht naar het registry
+          push: true 
+          # Tagt de image met de SHA van de commit
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}  
+          # Gebruikt GitHub Actions cache om build snelheden te verbeteren
           cache-from: type=gha
+          # Slaat build cache op om toekomstige builds te versnellen
           cache-to: type=gha,mode=max
 
+      # Stap 5: Maakt de '.kube' directory aan voor het opslaan van Kubernetes configuratiebestanden.
       - name: Create .kube directory
         run: mkdir -p $HOME/.kube
 
+      # Stap 6: Zet de KUBECONFIG-variabele in met de waarde uit de geheimen. Dit is nodig voor communicatie met het Kubernetes-cluster.
       - name: Set KUBECONFIG
         run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
+      # Stap 7: Installeert kubectl, een command-line tool voor het beheren van Kubernetes clusters.
       - name: Install kubectl
+        # Download kubectl versie 1.22.0, maakt het bestand uitvoerbaar, verplaatst het naar de juiste locatie in het besturingssysteem
         run: |
-          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl"  
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
 
+      # Stap 8: Updatet het Kubernetes deployment bestand met de nieuwe Docker image die zojuist is gebouwd.
       - name: Update Kubernetes deployment with new image
         run: |
           sed -i "s|image: .*|image: registry.digitalocean.com/rustgpt-container-registry/${{ github.repository }}:sha-${{ github.sha }}|g" k8s/rustgpt-deployment.yml
 
+      # Stap 9: Controleert of het bijgewerkte Kubernetes deployment YAML bestand de juiste image bevat.
       - name: Check updated deployment YAML
         run: cat k8s/rustgpt-deployment.yml
 
+      # Stap 10: Deployt het bijgewerkte Kubernetes deployment bestand naar het cluster.
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/rustgpt-deployment.yml
