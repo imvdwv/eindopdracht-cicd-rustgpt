@@ -34,6 +34,14 @@ spec:
         ports:
         # De poort waarop de applicatie luistert binnen de container.
         - containerPort: 3000
+        # Stelt CPU- en geheugenlimieten in om resourcegebruik te beperken (Best Practice 10: Beperk container resourcegebruik)
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
         # De image wordt altijd opnieuw getrokken, handig voor het updaten naar nieuwe versies.
         imagePullPolicy: Always
       imagePullSecrets:
