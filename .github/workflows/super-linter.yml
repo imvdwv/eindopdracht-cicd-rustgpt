@@ -1,4 +1,4 @@
-# Deze workflow zorgt voor het linten (controleren op code style en fouten) van de codebase
+# Deze workflow zorgt voor het linten (controleren op code style en fouten) van de codebase (Best Practice 8: Lint je Dockerfiles tijdens het builden)
 # Het helpt om consistentie en kwaliteit in de code te behouden.
 name: Lint Code Base
 

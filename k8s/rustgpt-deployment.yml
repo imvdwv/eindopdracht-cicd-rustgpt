@@ -36,6 +36,21 @@ spec:
         - containerPort: 3000
         # De image wordt altijd opnieuw getrokken, handig voor het updaten naar nieuwe versies.
         imagePullPolicy: Always
+        
+        # Best Practice 9: Stel de Docker daemon socket niet bloot.
+        # Voorkomt dat de container met root rechten draait of verhoogde privileges krijgt.
+        securityContext:
+          # Zorg ervoor dat de container als niet-root gebruiker draait
+          runAsNonRoot: true
+          # Specificeert de gebruiker-ID waarmee de container moet draaien
+          runAsUser: 1000  
+          # Voorkomt privilege escalatie
+          allowPrivilegeEscalation: false  
+          # Alle extra capabilities worden verwijderd voor meer veiligheid
+          capabilities:
+            drop:
+              - ALL  
+
       imagePullSecrets:
       # Verwijst naar de geheimen om toegang te krijgen tot het container registry.
       - name: rustgpt-registry-secret

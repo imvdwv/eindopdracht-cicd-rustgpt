@@ -1,4 +1,4 @@
-# Deze workflow scant Docker-images op beveiligingslekken met behulp van de Trivy-scanner.
+# Deze workflow scant Docker-images op beveiligingslekken met behulp van de Trivy-scanner (Best Practice 12: Scan images op kwetsbaarheden)
 # Het is handig om kwetsbaarheden in de image vroeg te identificeren en te verhelpen, zodat je applicatie veiliger is.
 
 name: Scan Docker Image
