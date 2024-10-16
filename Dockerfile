@@ -38,12 +38,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl pkg-config
 
 # Gebruikt de officiële ubuntu image (Best Practice 1: Gebruik officiële images)
 # Pint de versie voor meer controle en voorspelbaarheid (Best Practice 2: Pin Docker image versies)
-# Gebruik een kleinere base image voor productie (Best Practice 4: Minimaliseer image grootte en lagen)
+# Gebruikt een kleinere base image voor productie (Best Practice 4: Minimaliseer image grootte en lagen)
 FROM ubuntu:22.04
 
 WORKDIR /app              
 
-# Minimaliseer het aantal COPY-opdrachten door meerdere bestanden in één keer te kopiëren (Best Practice 4: Minimaliseer lagen)
 # Zorgt ervoor dat gevoelige data op een veilige manier wordt behandeld. (Best Practice 7: Beveilig gevoelige data)
 ENV MIGRATIONS_PATH=db/migrations        
 ENV TEMPLATES_PATH=templates             
@@ -51,7 +50,7 @@ ENV DATABASE_URL=sqlite:db/db.db
 ENV DATABASE_PATH=db/db.db               
 
 # Zorgt ervoor dat de meest recente pakketten worden geïnstalleerd (Best Practice 3: Houd Docker en de host up‐to‐date)
-# Verwijder je de ongebruikte apt-cache en verklein je de grootte van de image (Best Practice 4: Minimaliseer image grootte tijdens build)
+# Verwijdert de ongebruikte apt-cache en verkleint de grootte van de image (Best Practice 4: Minimaliseer image grootte tijdens build)
 RUN apt-get update && apt-get install -y --no-install-recommends libssl3 \
   && rm -rf /var/lib/apt/lists/*  
 
@@ -61,7 +60,7 @@ COPY --from=builder /app/templates /app/templates
 COPY --from=builder /app/db /app/db                 
 COPY --from=builder /app/assets/output.css /app/assets/output.css
 
-# Toevoegen van een nieuwe niet-rootgebruiker en beperkt privileges door alleen noodzakelijke uitvoerrechten te geven (Best Practice 5: Beperk privileges en toegang)
+# Voegt een nieuwe niet-rootgebruiker toe en beperkt privileges door alleen noodzakelijke uitvoerrechten te geven (Best Practice 5: Beperk privileges en toegang)
 # Draait Docker in rootless mode door een niet-root gebruiker te creëren en over te schakelen naar deze gebruiker (Best Practice 11: Draai Docker in rootless mode)
 RUN groupadd -r myuser && useradd -r -g myuser myuser \
   && chown -R myuser:myuser /app \

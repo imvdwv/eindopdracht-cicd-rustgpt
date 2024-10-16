@@ -14,7 +14,7 @@ on:
 jobs:
   run-lint:
     # Specificeert dat de lint job wordt uitgevoerd op een Ubuntu-machine.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     
     steps:
       # Stap 1: Haal de code op uit de repository om er verder mee te werken.
@@ -24,9 +24,9 @@ jobs:
           # Haal de volledige geschiedenis van de repo op voor nauwkeurig linten.
           fetch-depth: 0
 
-      # Stap 2: Voer de linting tool uit om bepaalde types bestanden te controleren op stijl- en syntaxfouten.
+      # Stap 2: Voert de linting tool uit om bepaalde types bestanden te controleren op stijl- en syntaxfouten.
       - name: Lint Code Base
-        # Super-linter ondersteunt meerdere talen en formats.
+        # Ondersteunt meerdere talen en formats.
         uses: github/super-linter@v4  
         env:
           # Alleen gewijzigde bestanden worden gevalideerd, niet de hele codebase.
