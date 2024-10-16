@@ -1,38 +1,38 @@
-# Dit is een Kubernetes Deployment resource. Een Deployment zorgt voor het beheren van een groep identieke pods.
-# Het helpt bij het automatisch schalen en beheren van applicatie-updates zonder downtime.
+# Dit is een Kubernetes Deployment resource. Een Deployment zorgt voor het beheren van een groep identieke pods
+# Het helpt bij het automatisch schalen en beheren van applicatie-updates zonder downtime
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # Naam van het deployment voor identificatie.
+  # Naam van het deployment voor identificatie
   name: rustgpt-deployment
 spec:
-  # Het aantal replicaties van de applicatie dat moet draaien. Handig voor hoge beschikbaarheid.
+  # Het aantal replicaties van de applicatie dat moet draaien. Handig voor hoge beschikbaarheid
   replicas: 3 
   strategy:
-    # Rolling update zorgt voor een geleidelijke vervanging van pods bij een update.
+    # Rolling update zorgt voor een geleidelijke vervanging van pods bij een update
     type: RollingUpdate  
     rollingUpdate:
-      # Maximaal 1 pod mag tegelijkertijd onbeschikbaar zijn tijdens een update.
+      # Maximaal 1 pod mag tegelijkertijd onbeschikbaar zijn tijdens een update
       maxUnavailable: 1  
-      # Maximaal 1 extra pod mag opgestart worden tijdens een update boven het gewenste aantal replicas.
+      # Maximaal 1 extra pod mag opgestart worden tijdens een update boven het gewenste aantal replicas
       maxSurge: 1  
   selector:
     matchLabels:
-      # Zorgt ervoor dat de juiste pods worden geselecteerd op basis van labels.
+      # Zorgt ervoor dat de juiste pods worden geselecteerd op basis van labels
       app: rustgpt
   template:
     metadata:
       labels:
-        # Het label dat gebruikt wordt om de pod te identificeren en matchen met de deployment.
+        # Het label dat gebruikt wordt om de pod te identificeren en matchen met de deployment
         app: rustgpt
     spec:
       containers:
-      # Naam van de container binnen de pod.
+      # Naam van de container binnen de pod
       - name: rustgpt-container
-        # De Docker-image die gebruikt wordt, inclusief tag met de commit SHA voor versioning.
+        # De Docker-image die gebruikt wordt, inclusief tag met de commit SHA voor versioning
         image: registry.digitalocean.com/rustgpt-container-registry/imvdwv/eindopdracht-cicd-rustgpt:sha-${{ github.sha }} 
         ports:
-        # De poort waarop de applicatie luistert binnen de container.
+        # De poort waarop de applicatie luistert binnen de container
         - containerPort: 3000
         # Stelt CPU- en geheugenlimieten in om resourcegebruik te beperken (Best Practice 10: Beperk container resourcegebruik)
         resources:
@@ -42,29 +42,29 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "250m"
-        # De image wordt altijd opnieuw getrokken, handig voor het updaten naar nieuwe versies.
+        # De image wordt altijd opnieuw getrokken, handig voor het updaten naar nieuwe versies
         imagePullPolicy: Always
       imagePullSecrets:
-      # Verwijst naar de geheimen om toegang te krijgen tot het container registry.
+      # Verwijst naar de geheimen om toegang te krijgen tot het container registry
       - name: rustgpt-registry-secret
 ---
-# Dit is een Kubernetes Service resource. Een Service zorgt voor netwerktoegang tot de pods in het cluster.
+# Dit is een Kubernetes Service resource. Een Service zorgt voor netwerktoegang tot de pods in het cluster
 apiVersion: v1
 kind: Service
 metadata:
-  # Naam van de service voor identificatie.
+  # Naam van de service voor identificatie
   name: rustgpt-service
 spec:
-  # De service koppelt aan de pods die het 'app: rustgpt' label hebben.
+  # De service koppelt aan de pods die het 'app: rustgpt' label hebben
   selector:
-    # De service zoekt pods met het label 'app: rustgpt'.
+    # De service zoekt pods met het label 'app: rustgpt'
     app: rustgpt
   ports:
-  # Het netwerkprotocol dat de service gebruikt (in dit geval TCP).
+  # Het netwerkprotocol dat de service gebruikt (in dit geval TCP)
   - protocol: TCP
-    # Externe poort waarop de service beschikbaar is.
+    # Externe poort waarop de service beschikbaar is
     port: 80
-    # Interne poort waarop de applicatie in de container luistert.
+    # Interne poort waarop de applicatie in de container luistert
     targetPort: 3000
-  # De service krijgt een extern IP-adres, zodat het bereikbaar is van buiten het cluster.
+  # De service krijgt een extern IP-adres, zodat het bereikbaar is van buiten het cluster
   type: LoadBalancer

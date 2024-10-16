@@ -1,43 +1,43 @@
 # Deze workflow zorgt voor het linten (controleren op code style en fouten) van de codebase (Best Practice 8: Lint je Dockerfiles tijdens het builden)
-# Het helpt om consistentie en kwaliteit in de code te behouden.
+# Het helpt om consistentie en kwaliteit in de code te behouden
 name: Lint Code Base
 
 on:
-  # De workflow wordt uitgevoerd bij een push naar de 'main' branch.
+  # De workflow wordt uitgevoerd bij een push naar de 'main' branch
   push:
     branches: [ "main" ]
   
-  # De workflow wordt ook uitgevoerd bij een pull request naar de 'main' branch.
+  # De workflow wordt ook uitgevoerd bij een pull request naar de 'main' branch
   pull_request:
     branches: [ "main" ]
 
 jobs:
   run-lint:
-    # Specificeert dat de lint job wordt uitgevoerd op een Ubuntu-machine.
+    # Specificeert dat de lint job wordt uitgevoerd op een Ubuntu-machine
     runs-on: ubuntu-20.04
     
     steps:
-      # Stap 1: Haal de code op uit de repository om er verder mee te werken.
+      # Stap 1: Haal de code op uit de repository om er verder mee te werken
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Haal de volledige geschiedenis van de repo op voor nauwkeurig linten.
+          # Haal de volledige geschiedenis van de repo op voor nauwkeurig linten
           fetch-depth: 0
 
-      # Stap 2: Voert de linting tool uit om bepaalde types bestanden te controleren op stijl- en syntaxfouten.
+      # Stap 2: Voert de linting tool uit om bepaalde types bestanden te controleren op stijl- en syntaxfouten
       - name: Lint Code Base
-        # Ondersteunt meerdere talen en formats.
+        # Ondersteunt meerdere talen en formats
         uses: github/super-linter@v4  
         env:
-          # Alleen gewijzigde bestanden worden gevalideerd, niet de hele codebase.
+          # Alleen gewijzigde bestanden worden gevalideerd, niet de hele codebase
           VALIDATE_ALL_CODEBASE: false
-          # Dockerfiles worden gevalideerd, belangrijk voor consistentie en veiligheid in Docker-omgevingen.
+          # Dockerfiles worden gevalideerd, belangrijk voor consistentie en veiligheid in Docker-omgevingen
           VALIDATE_DOCKERFILE: true
-          # CSS-validatie is uitgeschakeld omdat het hier niet nodig is.
+          # CSS-validatie is uitgeschakeld omdat het hier niet nodig is
           VALIDATE_CSS: false
-          # HTML-validatie is uitgeschakeld omdat het hier niet nodig is.
+          # HTML-validatie is uitgeschakeld omdat het hier niet nodig is
           VALIDATE_HTML: false
-          # Standaard branch voor vergelijking is de 'main' branch.
+          # Standaard branch voor vergelijking is de 'main' branch
           DEFAULT_BRANCH: "main"
-          # Gebruikt om authenticatie te bieden voor GitHub API-aanroepen.
+          # Gebruikt om authenticatie te bieden voor GitHub API-aanroepen
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
