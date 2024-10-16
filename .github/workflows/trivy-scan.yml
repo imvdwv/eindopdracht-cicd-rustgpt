@@ -1,5 +1,5 @@
 # Deze workflow scant Docker-images op beveiligingslekken met behulp van de Trivy-scanner (Best Practice 12: Scan images op kwetsbaarheden)
-# Het is handig om kwetsbaarheden in de image vroeg te identificeren en te verhelpen, zodat je applicatie veiliger is
+# Het is handig om kwetsbaarheden in de image vroeg te identificeren en te verhelpen, zodat de applicatie veiliger is
 
 name: Scan Docker Image
 
@@ -31,7 +31,7 @@ jobs:
           docker build -t registry.digitalocean.com/rustgpt-container-registry/eindopdracht-cicd-rustgpt:latest . 
 
       # Stap 3: Voert de Trivy vulnerability scanner uit in 'filesystem mode' om de lokale image te scannen
-      # Trivy is handig om beveiligingsrisico's op te sporen in de Docker-image en ervoor te zorgen dat je geen kwetsbare software gebruikt
+      # Trivy is handig om beveiligingsrisico's op te sporen in de Docker-image en ervoor te zorgen dat er geen kwetsbare software gebruikt
       - name: Run Trivy vulnerability scanner in fs mode
         uses: aquasecurity/trivy-action@0.20.0
         with:
